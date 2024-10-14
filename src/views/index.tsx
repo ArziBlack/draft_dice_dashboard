@@ -1,8 +1,11 @@
+import ViewCard from '@/components/ViewCard'
 import React from 'react'
 
-const Index = () => {
+const Index = ():React.JSX.Element => {
   return (
-    <div>index</div>
+    <ViewCard>
+        hi
+    </ViewCard>
   )
 }
 

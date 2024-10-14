@@ -1,9 +1,9 @@
 import "./App.css";
-import Layout from "./components/layout";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Index from "./views";
 import Home from "./views/home";
 import Library from "./views/library";
-import Index from "./views";
+import Layout from "./components/layout";
 import Subscribers from "./views/subscribers";
 
 function App() {
