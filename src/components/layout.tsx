@@ -6,7 +6,7 @@ const Layout = ({ children }: { children: React.JSX.Element | ReactNode }) => {
     <div className="flex">
       <Sidebar />
       <div className="flex-1 flex flex-col">
-        <div className="flex w-full h-8 bg-slate-700"></div>
+        <div className="flex w-full h-8 bg-background border-b border-slate-300"></div>
         <div className="p-6 bg-gray-100 h-screen overflow-y-auto">
           {children}
         </div>
