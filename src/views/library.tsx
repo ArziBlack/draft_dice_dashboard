@@ -1,8 +1,11 @@
+import ViewCard from '@/components/ViewCard'
 import React from 'react'
 
 const Library = ():React.JSX.Element => {
   return (
-    <div>library</div>
+    <ViewCard>
+        library
+    </ViewCard>
   )
 }
 

@@ -1,8 +1,11 @@
+import ViewCard from '@/components/ViewCard'
 import React from 'react'
 
 const Subscribers = ():React.JSX.Element => {
   return (
-    <div>subscribers</div>
+    <ViewCard>
+        subscribers
+    </ViewCard>
   )
 }
 

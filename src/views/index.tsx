@@ -4,7 +4,7 @@ import React from 'react'
 const Index = ():React.JSX.Element => {
   return (
     <ViewCard>
-        hi
+        index
     </ViewCard>
   )
 }

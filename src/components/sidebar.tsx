@@ -13,6 +13,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Link } from "react-router-dom";
+
 const Sidebar = () => {
   return (
     <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
@@ -27,7 +28,7 @@ const Sidebar = () => {
         <Tooltip>
           <TooltipTrigger asChild>
             <Link
-              to="#"
+              to="/"
               className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
             >
               <Home className="h-5 w-5" />
@@ -51,7 +52,7 @@ const Sidebar = () => {
         <Tooltip>
           <TooltipTrigger asChild>
             <Link
-              to="#"
+              to="/library"
               className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
             >
               <Package className="h-5 w-5" />
@@ -63,7 +64,7 @@ const Sidebar = () => {
         <Tooltip>
           <TooltipTrigger asChild>
             <Link
-              to="#"
+              to="/subscribers"
               className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
             >
               <Users2 className="h-5 w-5" />
@@ -75,7 +76,7 @@ const Sidebar = () => {
         <Tooltip>
           <TooltipTrigger asChild>
             <Link
-              to="#"
+              to="/blogger"
               className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
             >
               <LineChart className="h-5 w-5" />
@@ -89,7 +90,7 @@ const Sidebar = () => {
         <Tooltip>
           <TooltipTrigger asChild>
             <Link
-              to="#"
+              to="/settings"
               className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
             >
               <Settings className="h-5 w-5" />
