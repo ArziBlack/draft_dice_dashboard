@@ -1,12 +1,16 @@
-import ViewCard from '@/components/ViewCard'
-import React from 'react'
+import ViewCard from "@/components/ViewCard";
+import React from "react";
 
-const Index = ():React.JSX.Element => {
+const Index = (): React.JSX.Element => {
   return (
     <ViewCard>
-        index
+      <div className="grid grid-cols-3 gap-3 w-[700px] bg-white">
+        <div>hi</div>
+        <div>hi</div>
+        <div>hi</div>
+      </div>
     </ViewCard>
-  )
-}
+  );
+};
 
-export default Index
+export default Index;

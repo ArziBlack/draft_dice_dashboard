@@ -1,9 +1,21 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode } from "react";
 
-const ViewCard = ({children}:{children: ReactNode}):React.JSX.Element => {
-  return (
-    <div className='flex w-full items-center justify-center h-full'>{children}</div>
-  )
+interface ViewCardProps {
+  children: ReactNode;
+  className?: string;
 }
 
-export default ViewCard
+const ViewCard = ({
+  children,
+  className = "",
+}: ViewCardProps): React.JSX.Element => {
+  return (
+    <div
+      className={`flex w-full items-center justify-center h-full ${className}`}
+    >
+      {children}
+    </div>
+  );
+};
+
+export default ViewCard;
