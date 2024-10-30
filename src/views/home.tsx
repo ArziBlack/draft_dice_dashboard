@@ -1,14 +1,17 @@
 import QuillEditor from "@/components/quill/quill";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ViewCard from "@/components/ViewCard";
+import { Check } from "lucide-react";
 import React, { useState } from "react";
 
 const Home = (): React.JSX.Element => {
@@ -54,19 +57,37 @@ const Home = (): React.JSX.Element => {
             <Label htmlFor="content" className="text-left">
               Content
             </Label>
-            <QuillEditor content={content} handleContentChange={handleContentChange} />
+            <QuillEditor
+              content={content}
+              handleContentChange={handleContentChange}
+            />
           </div>
           <div className="flex flex-col mt-4 w-full">
-            <Label htmlFor="image" className="text-left py-3">Image</Label>
-            <Input type="file" id="image" accept="image/*" onChange={handleImageUpload} />
+            <Label htmlFor="image" className="text-left py-3">
+              Image
+            </Label>
+            <Input
+              type="file"
+              id="image"
+              accept="image/*"
+              onChange={handleImageUpload}
+            />
             {imagePreview && (
               <div className="mt-4 w-full flex justify-center">
-                <img src={imagePreview} alt="Selected" className="max-w-[450px] h-auto rounded-lg shadow-md" />
+                <img
+                  src={imagePreview}
+                  alt="Selected"
+                  className="max-w-[450px] h-auto rounded-lg shadow-md"
+                />
               </div>
             )}
           </div>
         </CardContent>
-        <Input />
+        <CardFooter>
+          <Button className="w-full">
+            <Check /> Upload Home Post
+          </Button>
+        </CardFooter>
       </Card>
     </ViewCard>
   );
