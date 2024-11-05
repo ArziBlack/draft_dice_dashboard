@@ -11,14 +11,22 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ViewCard from "@/components/ViewCard";
+import { useStoreActions, useStoreState } from "easy-peasy";
 import { Check } from "lucide-react";
 import React, { useState } from "react";
+import { StoreModel } from "../store/store";
+import { homeSchema } from "@/schema/home.schema";
 
 const Home = (): React.JSX.Element => {
+  const [title, setTitle] = useState<string | null>("");
+  const [description, setDescription] = useState<string>("");
   const [_image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [content, setContent] = useState<string>("");
-  // console.log(content)
+  const { createHome_Post } = useStoreActions((actions: StoreModel) => actions);
+  const { message, error, loading } = useStoreState(
+    (state: StoreModel) => state
+  );
 
   const handleContentChange = (value: string) => {
     setContent(value);
@@ -29,6 +37,32 @@ const Home = (): React.JSX.Element => {
     if (file) {
       setImage(file);
       setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const validateFields = () => {
+    const result = homeSchema.safeParse({
+      title,
+      description,
+      _image,
+      content,
+    });
+
+    if (!result.success) {
+      const errorMessages = result.error.errors.map((err) => err.message);
+      console.log("Validation errors:", errorMessages);
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = async(event: React.FormEvent) => {
+    event.preventDefault();
+    if (validateFields()) {
+      await createHome_Post({ title, description, content, image: _image });
+      console.log("Form submitted:", { title, description, _image, content });
+    } else {
+      console.log("Form submission failed due to validation errors.");
     }
   };
   return (
@@ -45,13 +79,23 @@ const Home = (): React.JSX.Element => {
             <Label htmlFor="title" className="text-left">
               Title
             </Label>
-            <Input id="title" placeholder="Title of the post" />
+            <Input
+              id="title"
+              placeholder="Title of the post"
+              value={title as string}
+              onChange={(e) => setTitle(e.target.value)}
+            />
           </div>
           <div className="flex flex-col space-y-1.5 w-full mt-5">
             <Label htmlFor="desc" className="text-left">
               Description
             </Label>
-            <Input id="desc" placeholder="Description of the post" />
+            <Input
+              id="desc"
+              placeholder="Description of the post"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
           </div>
           <div className="mt-4 w-full flex flex-col">
             <Label htmlFor="content" className="text-left">
