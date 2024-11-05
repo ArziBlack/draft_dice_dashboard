@@ -1,6 +1,7 @@
 import { action, thunk, createStore, Action, Thunk } from "easy-peasy";
-import axios from "axios";
 import { IHome, ILibrary } from "./types";
+import { axiosInstance } from "@/config/axios";
+import { URLS } from "./urls";
 
 interface ISubscribers {
   id: number;
@@ -16,6 +17,7 @@ export interface StoreModel {
   message: string | null;
   error: string | null;
 
+  serverTest: Thunk<StoreModel>;
   fetchHome_Posts: Thunk<StoreModel>;
   fetchLibrary_Posts: Thunk<StoreModel>;
   createHome_Post: Thunk<StoreModel, IHome>;
@@ -61,10 +63,22 @@ const storeModel: StoreModel = {
     state.error = payload;
   }),
 
+  serverTest: thunk(async (actions) => {
+    actions.setLoading(true);
+    try {
+      const response = axiosInstance.get("/dice");
+      return response;
+    } catch (error) {
+      actions.setError("Failed to ping server");
+    } finally {
+      actions.setLoading(false);
+    }
+  }),
+
   fetchSubscribers: thunk(async (actions) => {
     actions.setLoading(true);
     try {
-      const response = await axios.get(
+      const response = await axiosInstance.get(
         "https://jsonplaceholder.typicode.com/users"
       );
       actions.SetSubscribers(response.data);
@@ -79,7 +93,10 @@ const storeModel: StoreModel = {
   createHome_Post: thunk(async (actions, payload) => {
     actions.setLoading(true);
     try {
-      const response = await axios.post("www.com", payload);
+      const response = await axiosInstance.post(
+        URLS.home.createHomePost,
+        payload
+      );
       actions.setMessage(response.data.message);
       actions.setError(null);
       return response.data.message;
@@ -93,7 +110,10 @@ const storeModel: StoreModel = {
   createLibraryPosts: thunk(async (actions, payload) => {
     actions.setLoading(true);
     try {
-      const response = await axios.post("www.com", payload);
+      const response = await axiosInstance.post(
+        URLS.library.createLibraryPost,
+        payload
+      );
       actions.setMessage(response.data.message);
       actions.setError(null);
       return response.data.message;
@@ -107,7 +127,7 @@ const storeModel: StoreModel = {
   fetchHome_Posts: thunk(async (actions) => {
     actions.setLoading(true);
     try {
-      const response = await axios.get("www.com");
+      const response = await axiosInstance.get(URLS.home.getHomePost);
       actions.setHome_posts(response.data);
       actions.setError(null);
     } catch (error) {
@@ -120,7 +140,7 @@ const storeModel: StoreModel = {
   fetchLibrary_Posts: thunk(async (actions) => {
     actions.setLoading(true);
     try {
-      const response = await axios.get("www.com");
+      const response = await axiosInstance.get(URLS.library.getLibraryPost);
       actions.setLibrary_posts(response.data);
       actions.setError(null);
     } catch (error) {
