@@ -5,7 +5,8 @@ import "./index.css";
 import { TooltipProvider } from "./components/ui/tooltip.tsx";
 import { ThemeProvider } from "./components/theme-provider.tsx";
 import { StoreProvider } from "easy-peasy";
-import { store } from "./store/store.ts";
+import store from "./store/store.ts";
+import { Toaster } from "./components/ui/toaster.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -13,6 +14,7 @@ createRoot(document.getElementById("root")!).render(
       <ThemeProvider>
         <TooltipProvider>
           <App />
+          <Toaster/>
         </TooltipProvider>
       </ThemeProvider>
     </StoreProvider>

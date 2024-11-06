@@ -1,5 +1,6 @@
 import QuillEditor from "@/components/quill/quill";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -11,33 +12,40 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ViewCard from "@/components/ViewCard";
-import { useStoreActions, useStoreState } from "easy-peasy";
+import { Progress } from "@/components/ui/progress";
+import { useStoreState } from "easy-peasy";
 import { Check } from "lucide-react";
 import React, { useState } from "react";
 import { StoreModel } from "../store/store";
 import { homeSchema } from "@/schema/home.schema";
+import { useStoreActions } from "@/hooks/useEasyPeasy";
+import { IHome } from "@/store/types";
+import useFirestore from "@/hooks/useFirestore";
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 const Home = (): React.JSX.Element => {
-  const [title, setTitle] = useState<string | null>("");
+  const {
+    uploadImage,
+    uploadProgress,
+    url,
+    handleImageChange,
+    preview,
+    isLoading,
+  } = useFirestore();
+  const { toast } = useToast();
+  const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [_image, setImage] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [_image] = useState<File | string | null>(url);
+  const [imagePreview] = useState<string | null>(preview);
   const [content, setContent] = useState<string>("");
-  const { createHome_Post } = useStoreActions((actions: StoreModel) => actions);
+  const { createHomePost } = useStoreActions((actions) => actions);
   const { message, error, loading } = useStoreState(
     (state: StoreModel) => state
   );
 
   const handleContentChange = (value: string) => {
     setContent(value);
-  };
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImage(file);
-      setImagePreview(URL.createObjectURL(file));
-    }
   };
 
   const validateFields = () => {
@@ -51,17 +59,40 @@ const Home = (): React.JSX.Element => {
     if (!result.success) {
       const errorMessages = result.error.errors.map((err) => err.message);
       console.log("Validation errors:", errorMessages);
+      console.log(url)
       return false;
     }
     return true;
   };
 
-  const handleSubmit = async(event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (validateFields()) {
-      await createHome_Post({ title, description, content, image: _image });
+      const payload: IHome = {
+        title,
+        description,
+        content,
+        image: _image,
+      };
+      console.log(payload);
+      try {
+        await createHomePost(payload).then((res:any) => console.log(res));
+      } catch (error) {
+        toast({
+          title: "Error",
+          variant: "destructive",
+          description: error as string | "An unknown error occured",
+          action: <ToastAction altText="Retry Upload">Retry</ToastAction>,
+        });
+        console.error("Error submitting form:", error);
+      }
       console.log("Form submitted:", { title, description, _image, content });
     } else {
+      toast({
+        title: "Error",
+        variant: "destructive",
+        description: "Validation errors",
+      });
       console.log("Form submission failed due to validation errors.");
     }
   };
@@ -114,7 +145,7 @@ const Home = (): React.JSX.Element => {
               type="file"
               id="image"
               accept="image/*"
-              onChange={handleImageUpload}
+              onChange={handleImageChange}
             />
             {imagePreview && (
               <div className="mt-4 w-full flex justify-center">
@@ -125,11 +156,24 @@ const Home = (): React.JSX.Element => {
                 />
               </div>
             )}
+            <Button
+              variant="secondary"
+              className="mt-4 w-[300px]"
+              disabled={isLoading}
+              onClick={()=> uploadImage("home")}
+            >
+              {!isLoading ? (
+                "Upload Image"
+              ) : (
+                <Progress value={uploadProgress} className="w-[100%]" />
+              )}
+            </Button>
           </div>
         </CardContent>
         <CardFooter>
-          <Button className="w-full">
-            <Check /> Upload Home Post
+          <Button className="w-full" onClick={handleSubmit} disabled={loading}>
+            {loading ? <Loader2 className="animate-spin" /> : <Check />}
+            Upload Home Post
           </Button>
         </CardFooter>
       </Card>

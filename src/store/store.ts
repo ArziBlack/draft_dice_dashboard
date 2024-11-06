@@ -16,11 +16,12 @@ export interface StoreModel {
   loading: boolean;
   message: string | null;
   error: string | null;
+  imageURL: string;
 
   serverTest: Thunk<StoreModel>;
   fetchHome_Posts: Thunk<StoreModel>;
   fetchLibrary_Posts: Thunk<StoreModel>;
-  createHome_Post: Thunk<StoreModel, IHome>;
+  createHomePost: Thunk<StoreModel, IHome>;
   createLibraryPosts: Thunk<StoreModel, ILibrary>;
   updateHome_Post: Thunk<StoreModel, { id: string; body: IHome }>;
   updateLibrary_Post: Thunk<StoreModel, { id: string; body: ILibrary }>;
@@ -28,6 +29,7 @@ export interface StoreModel {
   deleteLibrary_Post: Thunk<StoreModel, string>;
 
   SetSubscribers: Action<StoreModel, ISubscribers[]>;
+  setImageUrl: Action<StoreModel, string>;
   setHome_posts: Action<StoreModel, IHome[]>;
   setMessage: Action<StoreModel, string | null>;
   setLibrary_posts: Action<StoreModel, ILibrary[]>;
@@ -44,6 +46,7 @@ const storeModel: StoreModel = {
   loading: false,
   message: "",
   error: null,
+  imageURL: "",
 
   SetSubscribers: action((state, payload) => {
     state.subscribers = payload;
@@ -66,6 +69,10 @@ const storeModel: StoreModel = {
   }),
   setError: action((state, payload) => {
     state.error = payload;
+  }),
+
+  setImageUrl: action((state, payload) => {
+    state.imageURL = payload;
   }),
 
   serverTest: thunk(async (actions) => {
@@ -95,7 +102,7 @@ const storeModel: StoreModel = {
     }
   }),
 
-  createHome_Post: thunk(async (actions, payload) => {
+  createHomePost: thunk(async (actions, payload) => {
     actions.setLoading(true);
     try {
       const response = await axiosInstance.post(
@@ -104,9 +111,10 @@ const storeModel: StoreModel = {
       );
       actions.setMessage(response.data.message);
       actions.setError(null);
-      return response.data.message;
+      return response.data;
     } catch (error) {
       actions.setError("Failed to create a home post");
+      console.log(error)
     } finally {
       actions.setLoading(false);
     }
@@ -216,4 +224,5 @@ const storeModel: StoreModel = {
   }),
 };
 
-export const store = createStore(storeModel);
+const store = createStore(storeModel);
+export default store;

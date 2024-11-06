@@ -1,11 +1,8 @@
 import axios from "axios";
-const baseURL = "https://dice-draft-service.onrender.com";
+const baseURL = "https://dice-draft-service.onrender.com/api/v1";
 export const axiosInstance = axios.create({
   baseURL: `${baseURL}/admin`,
   timeout: 5000,
-  headers: {
-    "Content-Type": "application/json",
-  },
 });
 
 axiosInstance.interceptors.request.use(
