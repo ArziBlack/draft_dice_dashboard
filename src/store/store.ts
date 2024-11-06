@@ -22,6 +22,11 @@ export interface StoreModel {
   fetchLibrary_Posts: Thunk<StoreModel>;
   createHome_Post: Thunk<StoreModel, IHome>;
   createLibraryPosts: Thunk<StoreModel, ILibrary>;
+  updateHome_Post: Thunk<StoreModel, { id: string; body: IHome }>;
+  updateLibrary_Post: Thunk<StoreModel, { id: string; body: ILibrary }>;
+  deleteHome_Post: Thunk<StoreModel, string>;
+  deleteLibrary_Post: Thunk<StoreModel, string>;
+
   SetSubscribers: Action<StoreModel, ISubscribers[]>;
   setHome_posts: Action<StoreModel, IHome[]>;
   setMessage: Action<StoreModel, string | null>;
@@ -119,6 +124,66 @@ const storeModel: StoreModel = {
       return response.data.message;
     } catch (error) {
       actions.setError("Failed to create a library post");
+    } finally {
+      actions.setLoading(false);
+    }
+  }),
+
+  updateHome_Post: thunk(
+    async (actions, { id, body }: { id: string; body: IHome }) => {
+      actions.setLoading(true);
+      try {
+        const response = await axiosInstance.put(
+          URLS.home.updateHomePost(id),
+          body
+        );
+        return response.data;
+      } catch (error) {
+        actions.setError("Failed to create a library post");
+      } finally {
+        actions.setLoading(false);
+      }
+    }
+  ),
+
+  updateLibrary_Post: thunk(
+    async (actions, { id, body }: { id: string; body: ILibrary }) => {
+      actions.setLoading(true);
+      try {
+        const response = await axiosInstance.put(
+          URLS.library.updateLibraryPost(id),
+          body
+        );
+        return response.data;
+      } catch (error) {
+        actions.setError("Failed to fetch posts");
+      } finally {
+        actions.setLoading(false);
+      }
+    }
+  ),
+
+  deleteHome_Post: thunk(async (actions, id) => {
+    actions.setLoading(true);
+    try {
+      const response = await axiosInstance.delete(URLS.home.deleteHomePost(id));
+      return response.data;
+    } catch (error) {
+      actions.setError("Failed to fetch posts");
+    } finally {
+      actions.setLoading(false);
+    }
+  }),
+
+  deleteLibrary_Post: thunk(async (actions, id) => {
+    actions.setLoading(true);
+    try {
+      const response = await axiosInstance.delete(
+        URLS.library.updateLibraryPost(id)
+      );
+      return response.data.message;
+    } catch (error) {
+      actions.setError("Failed to fetch posts");
     } finally {
       actions.setLoading(false);
     }

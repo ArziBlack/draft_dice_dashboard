@@ -1,4 +1,5 @@
 export interface IHome {
+  id?: string;
   title: string;
   description: string;
   image: string;
@@ -6,6 +7,7 @@ export interface IHome {
 }
 
 export interface ILibrary {
+  id?: string;
   title: string;
   video_id: string;
   image: string;
