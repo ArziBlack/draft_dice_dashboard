@@ -59,7 +59,7 @@ const Home = (): React.JSX.Element => {
     if (!result.success) {
       const errorMessages = result.error.errors.map((err) => err.message);
       console.log("Validation errors:", errorMessages);
-      console.log(url)
+      console.log(url);
       return false;
     }
     return true;
@@ -72,11 +72,16 @@ const Home = (): React.JSX.Element => {
         title,
         description,
         content,
-        image: _image,
+        image: url,
       };
       console.log(payload);
       try {
-        await createHomePost(payload).then((res:any) => console.log(res));
+        await createHomePost(payload).then((res: any) =>
+          toast({
+            title: "success",
+            description: res.message,
+          })
+        );
       } catch (error) {
         toast({
           title: "Error",
@@ -160,7 +165,7 @@ const Home = (): React.JSX.Element => {
               variant="secondary"
               className="mt-4 w-[300px]"
               disabled={isLoading}
-              onClick={()=> uploadImage("home")}
+              onClick={() => uploadImage("home")}
             >
               {!isLoading ? (
                 "Upload Image"

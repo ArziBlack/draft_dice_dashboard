@@ -7,6 +7,7 @@ import Layout from "./components/layout";
 import Subscribers from "./views/subscribers";
 import Blogger from "./views/blogger";
 import Setting from "./views/setting";
+import List from "./views/list";
 
 function App() {
   return (
@@ -17,7 +18,8 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/library" element={<Library />} />
           <Route path="/subscribers" element={<Subscribers />} />
-          <Route path="/blogger" element={<Blogger/>}/>
+          <Route path="/blogger" element={<Blogger />} />
+          <Route path="/list" element={<List/>}/>
           <Route path="/settings" element={<Setting/>}/>
         </Routes>
       </Layout>
