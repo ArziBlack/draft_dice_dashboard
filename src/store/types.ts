@@ -8,7 +8,7 @@ export interface IHome {
 export interface ILibrary {
   id?: string;
   title: string;
-  video_id: string;
-  image: string;
+  video_id: string | null;
+  image: string | null;
   content: string;
 }

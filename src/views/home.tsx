@@ -37,10 +37,9 @@ const Home = (): React.JSX.Element => {
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [_image] = useState<File | string | null>(url);
-  const [imagePreview] = useState<string | null>(preview);
   const [content, setContent] = useState<string>("");
   const { createHomePost } = useStoreActions((actions) => actions);
-  const { message, error, loading } = useStoreState(
+  const { message, error: errors, loading } = useStoreState(
     (state: StoreModel) => state
   );
 
@@ -79,14 +78,14 @@ const Home = (): React.JSX.Element => {
         await createHomePost(payload).then((res: any) =>
           toast({
             title: "success",
-            description: res.message,
+            description: message || res.message,
           })
         );
       } catch (error) {
         toast({
           title: "Error",
           variant: "destructive",
-          description: error as string | "An unknown error occured",
+          description: error as string || errors || "An unknown error occured",
           action: <ToastAction altText="Retry Upload">Retry</ToastAction>,
         });
         console.error("Error submitting form:", error);
@@ -152,10 +151,10 @@ const Home = (): React.JSX.Element => {
               accept="image/*"
               onChange={handleImageChange}
             />
-            {imagePreview && (
+            {preview && (
               <div className="mt-4 w-full flex justify-center">
                 <img
-                  src={imagePreview}
+                  src={preview}
                   alt="Selected"
                   className="max-w-[450px] h-auto rounded-lg shadow-md"
                 />

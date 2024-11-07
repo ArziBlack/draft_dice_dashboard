@@ -11,45 +11,111 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ViewCard from "@/components/ViewCard";
-import { Check } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
 import React, { useState } from "react";
+import useFirestore from "@/hooks/useFirestore";
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
+import { Progress } from "@/components/ui/progress";
+import { useStoreActions, useStoreState } from "@/hooks/useEasyPeasy";
+import { librarySchema } from "@/schema/library.schema";
+import { ILibrary } from "@/store/types";
 
 const Library = (): React.JSX.Element => {
-  const [_image, setImage] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const {
+    handleImageChange,
+    preview,
+    isLoading,
+    uploadProgress,
+    uploadImage,
+    url,
+  } = useFirestore();
+  const { toast } = useToast();
+  const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [videoUrl, setVideoUrl] = useState<string>("");
-  const [videoId, setVideoId] = useState<string | null>(null);
+  const [video_id, setVideoId] = useState<string | null>(null);
+  const { createLibraryPosts } = useStoreActions((actions) => actions);
+  const { loading } = useStoreState((state) => state);
 
   const handleContentChange = (value: string) => {
     setContent(value);
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImage(file);
-      setImagePreview(URL.createObjectURL(file));
+  const validateFields = () => {
+    const result = librarySchema.safeParse({
+      title,
+      video_id,
+      content,
+      url,
+    });
+
+    if (!result.success) {
+      const errorMessages = result.error.errors.map((err) => err.message);
+      console.log("Validation errors:", errorMessages);
+      return false;
     }
+    return true;
   };
 
-  const extractVideoId = (url: string) => {
+  const extractVideoId = (vid_url: string) => {
     const regex =
       /(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/|.+\?v=)?([^&]{11})|youtu\.be\/([^&]{11})/;
-    const match = url.match(regex);
+    const match = vid_url.match(regex);
     return match ? match[1] || match[2] : null;
   };
 
   const handleVideoUrlChange = async (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const url = e.target.value;
-    setVideoUrl(url);
-    const id = extractVideoId(url);
+    const vid_url = e.target.value;
+    setVideoUrl(vid_url);
+    const id = extractVideoId(vid_url);
 
     if (id) {
       setVideoId(id);
       console.log(id);
+    } else {
+      toast({
+        title: "invalid url",
+        variant: "destructive",
+        description: "cannot extract video id from url",
+        action: <ToastAction altText="Retry Extract">Retry</ToastAction>,
+      });
+    }
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (validateFields()) {
+      const payload: ILibrary = {
+        title,
+        video_id,
+        content,
+        image: url,
+      };
+
+      try {
+        await createLibraryPosts(payload).then((res: any) =>
+          toast({
+            title: "success",
+            description: res.message,
+          })
+        );
+      } catch (error) {
+        toast({
+          title: "Error",
+          variant: "destructive",
+          description: error as string | "An unknown error occured",
+          action: <ToastAction altText="Retry Upload">Retry</ToastAction>,
+        });
+      }
+    } else {
+      toast({
+        title: "Error",
+        variant: "destructive",
+        description: "Validation errors",
+      });
     }
   };
   return (
@@ -66,7 +132,12 @@ const Library = (): React.JSX.Element => {
             <Label htmlFor="title" className="text-left">
               Title
             </Label>
-            <Input id="title" placeholder="Title of the post" />
+            <Input
+              id="title"
+              placeholder="Title of the post"
+              value={title as string}
+              onChange={(e) => setTitle(e.target.value)}
+            />
           </div>
           <div className="flex flex-col mt-4 w-full space-y-1.5">
             <Label htmlFor="videoUrl" className="text-left">
@@ -78,12 +149,12 @@ const Library = (): React.JSX.Element => {
               value={videoUrl}
               onChange={handleVideoUrlChange}
             />
-            {videoId && (
+            {video_id && (
               <div className="mt-4 w-full flex justify-center">
                 <iframe
                   width="100%"
                   height="315"
-                  src={`https://www.youtube.com/embed/${videoId}`}
+                  src={`https://www.youtube.com/embed/${video_id}`}
                   title="YouTube video preview"
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -111,22 +182,35 @@ const Library = (): React.JSX.Element => {
               type="file"
               id="thumpbnail"
               accept="image/*"
-              onChange={handleImageUpload}
+              onChange={handleImageChange}
             />
-            {imagePreview && (
+            {preview && (
               <div className="mt-4 w-full flex justify-center">
                 <img
-                  src={imagePreview}
+                  src={preview}
                   alt="Selected"
                   className="max-w-[450px] h-auto rounded-lg shadow-md"
                 />
               </div>
             )}
+            <Button
+              variant="secondary"
+              className="mt-4 w-[300px]"
+              disabled={isLoading}
+              onClick={() => uploadImage("home")}
+            >
+              {!isLoading ? (
+                "Upload Image"
+              ) : (
+                <Progress value={uploadProgress} className="w-[100%]" />
+              )}
+            </Button>
           </div>
         </CardContent>
         <CardFooter>
-          <Button className="w-full">
-            <Check /> Upload Library Post
+          <Button className="w-full" onClick={handleSubmit} disabled={loading}>
+            {loading ? <Loader2 className="animate-spin" /> : <Check />} Upload
+            Library Post
           </Button>
         </CardFooter>
       </Card>
