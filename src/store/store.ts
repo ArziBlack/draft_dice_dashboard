@@ -1,5 +1,5 @@
 import { action, thunk, createStore, Action, Thunk } from "easy-peasy";
-import { IHome, ILibrary } from "./types";
+import { IHome, IHomeResponse, ILibrary, ILibraryResponse } from "./types";
 import { axiosInstance } from "@/config/axios";
 import { URLS } from "./urls";
 
@@ -11,8 +11,8 @@ interface ISubscribers {
 
 export interface StoreModel {
   subscribers: ISubscribers[];
-  home_post: IHome[];
-  library_post: ILibrary[];
+  home_post: IHomeResponse[];
+  library_post: ILibraryResponse[];
   loading: boolean;
   message: string | null;
   error: string | null;
@@ -56,11 +56,11 @@ const storeModel: StoreModel = {
     state.message = payload;
   }),
 
-  setHome_posts: action((state, payload) => {
+  setHome_posts: action((state, payload: IHomeResponse[]) => {
     state.home_post = payload;
   }),
 
-  setLibrary_posts: action((state, payload) => {
+  setLibrary_posts: action((state, payload: ILibraryResponse[]) => {
     state.library_post = payload;
   }),
 
@@ -114,7 +114,7 @@ const storeModel: StoreModel = {
       return response.data;
     } catch (error) {
       actions.setError("Failed to create a home post");
-      console.log(error)
+      console.log(error);
     } finally {
       actions.setLoading(false);
     }
@@ -201,10 +201,11 @@ const storeModel: StoreModel = {
     actions.setLoading(true);
     try {
       const response = await axiosInstance.get(URLS.home.getHomePost);
-      actions.setHome_posts(response.data);
+      actions.setHome_posts(response.data.data);
       actions.setError(null);
     } catch (error) {
       actions.setError("Failed to fetch posts");
+      console.log(error);
     } finally {
       actions.setLoading(false);
     }
@@ -214,7 +215,7 @@ const storeModel: StoreModel = {
     actions.setLoading(true);
     try {
       const response = await axiosInstance.get(URLS.library.getLibraryPost);
-      actions.setLibrary_posts(response.data);
+      actions.setLibrary_posts(response.data.data);
       actions.setError(null);
     } catch (error) {
       actions.setError("Failed to fetch posts");
