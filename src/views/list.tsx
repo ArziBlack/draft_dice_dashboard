@@ -1,12 +1,13 @@
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ListCard from "@/components/list-card";
 
 const List = (): React.JSX.Element => {
   return (
     <div className=" flex flex-col items-center justify-center w-full h-full">
       <Tabs
         defaultValue="home"
-        className="w-full flex flex-col items-center justify-center pb-12"
+        className="w-full flex flex-col items-center justify-start pb-12 min-h-[400px]"
       >
         <TabsList className="mb-10">
           <TabsTrigger value="home">Home Posts</TabsTrigger>
@@ -14,13 +15,16 @@ const List = (): React.JSX.Element => {
           <TabsTrigger value="blog">Blog post</TabsTrigger>
         </TabsList>
         <TabsContent value="home">
-          <div className="space-y-8 lg:grid lg:grid-cols-3 sm:gap-6 xl:gap-10 lg:space-y-0"></div>
+          <ListCard title="home" description="home post" />
+          <ListCard title="home" description="home post"/>
         </TabsContent>
         <TabsContent value="library">
-          <div className="space-y-8 lg:grid lg:grid-cols-3 sm:gap-6 xl:gap-10 lg:space-y-0"></div>
+          <ListCard title="home" description="home post" />
+          <ListCard title="home" description="home post"/>
         </TabsContent>
         <TabsContent value="blog">
-          <div className="space-y-8 lg:grid lg:grid-cols-3 sm:gap-6 xl:gap-10 lg:space-y-0"></div>
+          <ListCard title="home" description="home post" />
+          <ListCard title="home" description="home post"/>
         </TabsContent>
       </Tabs>
     </div>
