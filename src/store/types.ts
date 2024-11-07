@@ -7,7 +7,7 @@ export interface IHome {
 }
 
 export interface IHomeResponse {
-  id: string;
+  _id: string;
   title: string;
   description: string;
   image: File | string | null;
@@ -23,7 +23,7 @@ export interface ILibrary {
 }
 
 export interface ILibraryResponse {
-  id: string;
+  _id: string;
   title: string;
   video_id: string | null;
   image: string | null;

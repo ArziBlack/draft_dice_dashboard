@@ -20,7 +20,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
-import { useStoreActions } from "@/hooks/useEasyPeasy";
+import { useStoreActions, useStoreState } from "@/hooks/useEasyPeasy";
+import { Loader2 } from "lucide-react";
 
 interface IListCard {
   id: string;
@@ -47,12 +48,18 @@ const ListCard: React.FC<IListCard> = ({
   const { deleteHome_Post, deleteLibrary_Post } = useStoreActions(
     (actions) => actions
   );
+  const { loading } = useStoreState((state) => state);
 
   const handleDelete = async () => {
-    if (view === "home") {
-      await deleteHome_Post(id).then((res: any) => console.log(res));
-    } else if (view === "library") {
-      await deleteLibrary_Post(id).then((res: any) => console.log(res));
+    try {
+      if (view === "home" && id) {
+        await deleteHome_Post(id);
+      } else if (view === "library" && id) {
+        await deleteLibrary_Post(id);
+      }
+      console.log("Delete successful");
+    } catch (error) {
+      console.error("Delete failed", error);
     }
   };
 
@@ -116,7 +123,15 @@ const ListCard: React.FC<IListCard> = ({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>Continue</AlertDialogAction>
+            <AlertDialogAction
+              disabled={loading}
+              onClick={() => {
+                console.log("Delete button clicked");
+                handleDelete();
+              }}
+            >
+              {loading ? <Loader2 className="animate-spin" /> : "Continue"}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

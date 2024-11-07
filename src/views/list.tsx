@@ -26,6 +26,7 @@ const List = (): React.JSX.Element => {
   );
   const { home_post, library_post, loading } = useStoreState((state) => state);
 
+  console.log(view)
   console.log(home_post);
   console.log(library_post);
   React.useEffect(() => {
@@ -50,7 +51,8 @@ const List = (): React.JSX.Element => {
             {home_post?.map((item, idx) => (
               <ListCard
                 key={idx}
-                id={item?.id}
+                view={view}
+                id={item?._id}
                 title={item?.title}
                 description={item?.description}
                 button={
@@ -103,7 +105,8 @@ const List = (): React.JSX.Element => {
             {library_post?.map((item, idx) => (
               <ListCard
                 key={idx}
-                id={item?.id}
+                view={view}
+                id={item?._id}
                 title={item?.title}
                 video={item?.video_id as string}
                 button={
@@ -156,6 +159,7 @@ const List = (): React.JSX.Element => {
             <ListCard
               id="5"
               title={view}
+              view={view}
               description="home post"
               button={
                 <SheetTrigger asChild>
