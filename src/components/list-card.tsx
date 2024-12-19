@@ -22,18 +22,7 @@ import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { useStoreActions, useStoreState } from "@/hooks/useEasyPeasy";
 import { Loader2 } from "lucide-react";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
-import { Minus, Plus } from "lucide-react";
-import { Sheet } from "@/components/ui/sheet";
+import { DrawerTrigger } from "@/components/ui/drawer";
 
 interface IListCard {
   id: string;
@@ -57,11 +46,6 @@ const ListCard: React.FC<IListCard> = ({
   video_id,
   handleVideoUrlChange,
 }): React.JSX.Element => {
-  const [goal, setGoal] = React.useState(350);
-
-  function onClick(adjustment: number) {
-    setGoal(Math.max(200, Math.min(400, goal + adjustment)));
-  }
   const { deleteHome_Post, deleteLibrary_Post } = useStoreActions(
     (actions) => actions
   );

@@ -29,13 +29,10 @@ import { Minus, Plus } from "lucide-react";
 
 const List = (): React.JSX.Element => {
   const [view, setView] = React.useState<string>("home");
-  const [form, setForm] = React.useState({
-    title: "",
-  });
   const { fetchHome_Posts, fetchLibrary_Posts } = useStoreActions(
     (actions) => actions
   );
-  const { home_post, library_post, loading } = useStoreState((state) => state);
+  const { home_post, library_post } = useStoreState((state) => state);
 
   console.log(view);
   console.log(home_post);
