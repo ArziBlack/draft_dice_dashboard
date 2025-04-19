@@ -1,27 +1,49 @@
+import { Suspense, lazy } from "react";
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Index from "./views";
-import Home from "./views/home";
-import Library from "./views/library";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./components/layout";
-import Subscribers from "./views/subscribers";
-import Blogger from "./views/blogger";
-import Setting from "./views/setting";
-import List from "./views/list";
+
+// Lazy load components for better performance
+const Index = lazy(() => import("./views/index"));
+const Home = lazy(() => import("./views/home"));
+const Library = lazy(() => import("./views/library"));
+const Subscribers = lazy(() => import("./views/subscribers"));
+const Blogger = lazy(() => import("./views/blogger"));
+const List = lazy(() => import("./views/list"));
+const Setting = lazy(() => import("./views/setting"));
+
+// Loading fallback component
+const LoadingFallback = () => (
+  <div className="flex items-center justify-center h-screen">
+    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+  </div>
+);
 
 function App() {
   return (
     <Router>
       <Layout>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/library" element={<Library />} />
-          <Route path="/subscribers" element={<Subscribers />} />
-          <Route path="/blogger" element={<Blogger />} />
-          <Route path="/list" element={<List/>}/>
-          <Route path="/settings" element={<Setting/>}/>
-        </Routes>
+        <Suspense fallback={<LoadingFallback />}>
+          <Routes>
+            {/* Dashboard route */}
+            <Route path="/" element={<Index />} />
+            
+            {/* Content management routes */}
+            <Route path="/home" element={<Home />} />
+            <Route path="/library" element={<Library />} />
+            <Route path="/blogger" element={<Blogger />} />
+            
+            {/* User management routes */}
+            <Route path="/subscribers" element={<Subscribers />} />
+            <Route path="/list" element={<List />} />
+            
+            {/* Settings */}
+            <Route path="/settings" element={<Setting />} />
+            
+            {/* Fallback route for any unmatched paths */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Suspense>
       </Layout>
     </Router>
   );

@@ -10,140 +10,144 @@ import {
 } from "@/components/ui/card";
 import ViewCard from "@/components/ViewCard";
 import React from "react";
+import { ArrowUpRight, Users, FileText, TrendingUp } from "lucide-react";
+
+const StatCard = ({ title, value, change, icon }: { title: string; value: string; change: string; icon: React.ReactNode }) => (
+  <Card className="hover:shadow-md transition-all duration-200">
+    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+      <CardTitle className="text-sm font-medium">{title}</CardTitle>
+      <div className="rounded-full p-2 bg-muted">{icon}</div>
+    </CardHeader>
+    <CardContent>
+      <div className="text-2xl font-bold">{value}</div>
+      <div className="flex items-center text-xs text-muted-foreground">
+        <span className={change.startsWith('+') ? "text-green-500" : "text-red-500"}>
+          {change}
+        </span>
+        <span className="ml-1">vs last 30 days</span>
+      </div>
+    </CardContent>
+  </Card>
+);
 
 const Index = (): React.JSX.Element => {
+  const stats = [
+    {
+      title: "TOTAL HOME POSTS",
+      value: "341",
+      change: "+6%",
+      icon: <FileText className="h-4 w-4" />
+    },
+    {
+      title: "ACTIVE USERS",
+      value: "325",
+      change: "+2%",
+      icon: <Users className="h-4 w-4" />
+    },
+    {
+      title: "INACTIVE USERS",
+      value: "16",
+      change: "-1%",
+      icon: <Users className="h-4 w-4" />
+    },
+    {
+      title: "NEW USERS",
+      value: "27",
+      change: "+6%",
+      icon: <TrendingUp className="h-4 w-4" />
+    }
+  ];
+
   return (
-    <ViewCard className="pl-8">
-      <main className="flex w-full items-center justify-center min-h-screen p-2 pb-20">
-        <section className="flex-1 space-y-4 px-1">
-          <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Card className="hover:bg-sky-400">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  TOTAL HOME POSTS
-                </CardTitle>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  className="h-4 w-4 text-muted-foreground"
-                >
-                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                </svg>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">341</div>
-                <p className="text-xs text-muted-foreground">
-                  6% vs last 30 days
-                </p>
-              </CardContent>
+    <ViewCard className="px-4 flex-col pt-[800px]">
+      <main className="flex w-full flex-col space-y-6 p-2">
+        <div className="flex items-center justify-between">
+          <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+          <div className="flex items-center gap-2">
+            <Card className="bg-primary text-primary-foreground p-2 flex items-center gap-2">
+              <span>View Analytics</span>
+              <ArrowUpRight className="h-4 w-4" />
             </Card>
-            <Card className="hover:bg-sky-400">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  ACTIVE USERS
-                </CardTitle>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  className="h-4 w-4 text-muted-foreground"
-                >
-                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                  <circle cx="9" cy="7" r="4" />
-                  <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-                </svg>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">325</div>
-                <p className="text-xs text-muted-foreground">
-                  2% vs last 30 days
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="hover:bg-sky-400">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  INACTIVE USERS
-                </CardTitle>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  className="h-4 w-4 text-muted-foreground"
-                >
-                  <rect width="20" height="14" x="2" y="5" rx="2" />
-                  <path d="M2 10h20" />
-                </svg>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">16</div>
-                <p className="text-xs text-muted-foreground">
-                  1% vs last 30 days
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="hover:bg-sky-400">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">NEW USERS</CardTitle>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  className="h-4 w-4 text-muted-foreground"
-                >
-                  <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                </svg>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">27</div>
-                <p className="text-xs text-muted-foreground">
-                  6% vs last 30 days
-                </p>
-              </CardContent>
-            </Card>
-          </section>
+          </div>
+        </div>
 
-          <CardContent className="flex flex-col lg:flex-row flex-1 w-full gap-5 p-0">
-            <section className="flex flex-col lg:flex-row flex-1 w-full gap-5">
-              <section className="flex flex-[0.7] flex-col gap-4">
-                <Overview />
-                <Overview />
-              </section>
-
-              <section className="flex flex-[0.3] flex-col gap-4">
-                <UploadedPosts />
-                <Card className="flex-1">
-                  <CardHeader>
-                    <CardTitle>Recent Post</CardTitle>
-                    <CardDescription>
-                      You made 265 post this month.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <RecentPosts />
-                  </CardContent>
-                </Card>
-              </section>
-            </section>
-          </CardContent>
+        <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {stats.map((stat, index) => (
+            <StatCard 
+              key={index}
+              title={stat.title}
+              value={stat.value}
+              change={stat.change}
+              icon={stat.icon}
+            />
+          ))}
         </section>
+
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <Card className="col-span-2">
+            <CardHeader>
+              <CardTitle>Analytics Overview</CardTitle>
+              <CardDescription>
+                View your analytics data across all platforms.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Overview />
+            </CardContent>
+          </Card>
+          
+          <div className="flex flex-col gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Recent Uploads</CardTitle>
+                <CardDescription>
+                  Your most recent content uploads.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <UploadedPosts />
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>Recent Posts</CardTitle>
+                <CardDescription>
+                  You made 265 posts this month.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <RecentPosts />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>Content Performance</CardTitle>
+              <CardDescription>
+                How your content is performing over time.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Overview />
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>User Engagement</CardTitle>
+              <CardDescription>
+                Track user interaction with your content.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Overview />
+            </CardContent>
+          </Card>
+        </div>
       </main>
     </ViewCard>
   );

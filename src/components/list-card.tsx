@@ -5,6 +5,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
+  CardDescription,
 } from "./ui/card";
 import { Button } from "./ui/button";
 import {
@@ -21,8 +22,10 @@ import {
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { useStoreActions, useStoreState } from "@/hooks/useEasyPeasy";
-import { Loader2 } from "lucide-react";
+import { Loader2, Eye, Trash2, Calendar, Clock } from "lucide-react";
 import { DrawerTrigger } from "@/components/ui/drawer";
+import { Badge } from "./ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 interface IListCard {
   id: string;
@@ -30,10 +33,10 @@ interface IListCard {
   description?: string;
   video?: string;
   view?: string;
-  //   setView?: React.Dispatch<React.SetStateAction<string>>;
   video_id?: string;
   button?: React.ReactNode;
   handleVideoUrlChange?: () => void;
+  createdAt?: string;
 }
 
 const ListCard: React.FC<IListCard> = ({
@@ -45,6 +48,7 @@ const ListCard: React.FC<IListCard> = ({
   video,
   video_id,
   handleVideoUrlChange,
+  createdAt,
 }): React.JSX.Element => {
   const { deleteHome_Post, deleteLibrary_Post } = useStoreActions(
     (actions) => actions
@@ -64,147 +68,130 @@ const ListCard: React.FC<IListCard> = ({
     }
   };
 
+  // Format date if available, or use placeholder
+  const formattedDate = createdAt 
+    ? new Date(createdAt).toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+      })
+    : 'Unknown date';
+
   return (
-    <div className="w-full mb-2">
-      {/* <Sheet> */}
-      {/* <Drawer> */}
-      <AlertDialog>
-        <Card className=" w-[600px]">
-          <CardHeader>
-            <CardTitle>{title}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {description}
-            {video && (
-              <div className="flex flex-col mt-4 w-full space-y-1.5">
-                <Label htmlFor="videoUrl" className="text-left">
-                  YouTube Video URL
+    <AlertDialog>
+      <Card className="overflow-hidden transition-all duration-200 hover:shadow-md">
+        <CardHeader className="pb-2">
+          <div className="flex justify-between items-start">
+            <div>
+              <CardTitle className="text-xl font-semibold line-clamp-1">{title}</CardTitle>
+              {view && (
+                <Badge variant="outline" className="mt-1">
+                  {view.charAt(0).toUpperCase() + view.slice(1)}
+                </Badge>
+              )}
+            </div>
+            <Avatar className="h-8 w-8">
+              <AvatarImage src="/avatar.png" alt="User" />
+              <AvatarFallback>ED</AvatarFallback>
+            </Avatar>
+          </div>
+        </CardHeader>
+        
+        <CardContent className="pb-2">
+          {description && (
+            <CardDescription className="line-clamp-2 text-sm text-muted-foreground mb-4">
+              {description}
+            </CardDescription>
+          )}
+          
+          {video && (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Label htmlFor="videoUrl" className="text-sm font-medium">
+                  YouTube Video
                 </Label>
+                <Badge variant="secondary" className="text-xs">Video</Badge>
+              </div>
+              
+              <div className="relative">
                 <Input
                   id="videoUrl"
                   placeholder="Paste YouTube video URL here"
                   value={video}
                   onChange={handleVideoUrlChange}
+                  className="pr-10"
                 />
-                {video_id ||
-                  (video && (
-                    <div className="mt-4 w-full flex justify-center">
-                      <iframe
-                        width="100%"
-                        height="315"
-                        src={`https://www.youtube.com/embed/${video}`}
-                        title="YouTube video preview"
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        className="rounded-lg shadow-md"
-                      ></iframe>
-                    </div>
-                  ))}
+                <Eye className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground" />
               </div>
-            )}
-          </CardContent>
-          <CardFooter className="flex w-full justify-between my-2">
+              
+              {(video_id || video) && (
+                <div className="mt-4 w-full aspect-video rounded-md overflow-hidden">
+                  <iframe
+                    width="100%"
+                    height="100%"
+                    src={`https://www.youtube.com/embed/${video}`}
+                    title="YouTube video preview"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="rounded-lg shadow-sm"
+                  ></iframe>
+                </div>
+              )}
+            </div>
+          )}
+          
+          <div className="flex items-center gap-2 mt-4 text-xs text-muted-foreground">
+            <Calendar className="h-3 w-3" />
+            <span>{formattedDate}</span>
+            <Clock className="h-3 w-3 ml-2" />
+            <span>Last updated: Today</span>
+          </div>
+        </CardContent>
+        
+        <CardFooter className="flex justify-between pt-2 gap-2">
+          <div className="flex gap-2">
             <DrawerTrigger asChild>
-              <Button variant="secondary" className="w-[100px] p-1">
+              <Button variant="outline" size="sm">
+                <Eye className="h-4 w-4 mr-1" />
                 View
               </Button>
             </DrawerTrigger>
             {button}
-            <AlertDialogTrigger asChild>
-              <Button variant="destructive" className="w-[100px] p-1">
-                Delete
-              </Button>
-            </AlertDialogTrigger>
-          </CardFooter>
-        </Card>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your
-              account and remove your data from our servers.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              disabled={loading}
-              onClick={() => {
-                console.log("Delete button clicked");
-                handleDelete();
-              }}
-            >
-              {loading ? <Loader2 className="animate-spin" /> : "Continue"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-      {/* <DrawerContent>
-            <div className="mx-auto w-full max-w-sm">
-              <DrawerHeader>
-                <DrawerTitle>Edit Goal</DrawerTitle>
-                <DrawerDescription>
-                  Set your daily activity goal.
-                </DrawerDescription>
-              </DrawerHeader>
-              <div className="p-4 pb-0">
-                <div className="flex items-center justify-center space-x-2">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8 shrink-0 rounded-full"
-                    onClick={() => onClick(-10)}
-                    disabled={goal <= 200}
-                  >
-                    <Minus />
-                    <span className="sr-only">Decrease</span>
-                  </Button>
-                  <div className="flex-1 text-center">
-                    <div className="text-7xl font-bold tracking-tighter">
-                      {goal}
-                    </div>
-                    <div className="text-[0.70rem] uppercase text-muted-foreground">
-                      Calories/day
-                    </div>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8 shrink-0 rounded-full"
-                    onClick={() => onClick(10)}
-                    disabled={goal >= 400}
-                  >
-                    <Plus />
-                    <span className="sr-only">Increase</span>
-                  </Button>
-                </div>
-                <div className="mt-3 h-[120px]"> */}
-      {/* <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={data}>
-                    <Bar
-                      dataKey="goal"
-                      style={
-                        {
-                          fill: "hsl(var(--foreground))",
-                          opacity: 0.9,
-                        } as React.CSSProperties
-                      }
-                    />
-                  </BarChart>
-                </ResponsiveContainer> */}
-      {/*</div> */}
-      {/* <DrawerFooter>
-                <Button>Submit</Button>
-                <DrawerClose asChild>
-                  <Button variant="outline">Cancel</Button>
-                </DrawerClose>
-              </DrawerFooter> */}
-      {/* </div> */}
-      {/* </DrawerContent> */}
-      {/* </Drawer> */}
-      {/*</Sheet>*/}
-    </div>
+          </div>
+          
+          <AlertDialogTrigger asChild>
+            <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive hover:bg-destructive/10">
+              <Trash2 className="h-4 w-4 mr-1" />
+              Delete
+            </Button>
+          </AlertDialogTrigger>
+        </CardFooter>
+      </Card>
+      
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete this post
+            and remove the data from our servers.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            disabled={loading}
+            onClick={() => {
+              handleDelete();
+            }}
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          >
+            {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Trash2 className="h-4 w-4 mr-2" />}
+            Delete
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
 
